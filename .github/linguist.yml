@@ -1,0 +1,13 @@
+# GitHub Linguist configuration
+# Force language detection to PHP
+linguist-language: PHP
+
+# Mark documentation files
+documentation:
+  - README.md
+  - "*.md"
+
+# Mark certain files as generated (if any)
+# generated:
+#   - "*.min.js"
+#   - "*.min.css"
