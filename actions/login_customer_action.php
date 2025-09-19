@@ -14,32 +14,50 @@ if (isset($_SESSION['user_id'])) {
     exit();
 }
 
-require_once '../controllers/user_controller.php';
+require_once '../controllers/customer_controller.php';
 
-$email = $_POST['email'];
-$password = $_POST['password'];
+// Validate input data
+if (!isset($_POST['email']) || !isset($_POST['password'])) {
+    $response['status'] = 'error';
+    $response['message'] = 'Email and password are required';
+    echo json_encode($response);
+    exit();
+}
 
-$user_data = login_customer_ctr($email, $password);
+$email = trim($_POST['email']);
+$password = trim($_POST['password']);
 
-if ($user_data) {
-    // Set session variables
-    $_SESSION['user_id'] = $user_data['customer_id'];
-    $_SESSION['user_name'] = $user_data['customer_name'];
-    $_SESSION['user_email'] = $user_data['customer_email'];
-    $_SESSION['user_role'] = $user_data['user_role'];
-    $_SESSION['user_contact'] = $user_data['customer_contact'];
+// Use the customer controller for login
+$login_result = login_customer_ctr($email, $password);
+
+if ($login_result['status'] === 'success') {
+    $customer_data = $login_result['data'];
+    
+    // Set session variables for user ID, role, name, and other attributes
+    $_SESSION['user_id'] = $customer_data['customer_id'];
+    $_SESSION['user_name'] = $customer_data['customer_name'];
+    $_SESSION['user_email'] = $customer_data['customer_email'];
+    $_SESSION['user_role'] = $customer_data['user_role'];
+    $_SESSION['user_contact'] = $customer_data['customer_contact'];
+    $_SESSION['user_country'] = $customer_data['customer_country'];
+    $_SESSION['user_city'] = $customer_data['customer_city'];
+    $_SESSION['user_image'] = $customer_data['customer_image'];
+    $_SESSION['login_time'] = date('Y-m-d H:i:s');
     
     $response['status'] = 'success';
-    $response['message'] = 'Login successful';
+    $response['message'] = $login_result['message'];
     $response['user_data'] = array(
-        'id' => $user_data['customer_id'],
-        'name' => $user_data['customer_name'],
-        'email' => $user_data['customer_email'],
-        'role' => $user_data['user_role']
+        'id' => $customer_data['customer_id'],
+        'name' => $customer_data['customer_name'],
+        'email' => $customer_data['customer_email'],
+        'role' => $customer_data['user_role'],
+        'contact' => $customer_data['customer_contact'],
+        'country' => $customer_data['customer_country'],
+        'city' => $customer_data['customer_city']
     );
 } else {
     $response['status'] = 'error';
-    $response['message'] = 'Invalid email or password';
+    $response['message'] = $login_result['message'];
 }
 
 echo json_encode($response);

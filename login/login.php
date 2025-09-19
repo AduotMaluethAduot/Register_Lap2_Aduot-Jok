@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+<?php
+session_start();
+
+// Redirect if user is already logged in
+if (isset($_SESSION['user_id'])) {
+    header('Location: ../index.php');
+    exit();
+}
+?>
+<!DOCTYPE html>>
 <html lang="en">
 
 <head>

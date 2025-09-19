@@ -1,0 +1,27 @@
+# Ignore database credentials (sensitive)
+settings/db_cred.php
+
+# Ignore temporary files
+*.tmp
+*.log
+*.cache
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore vendor directory if using Composer
+vendor/
+
+# Ignore uploaded files
+uploads/
+images/uploads/
+
+# Ignore session files
+tmp/sessions/

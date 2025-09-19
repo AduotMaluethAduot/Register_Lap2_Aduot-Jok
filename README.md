@@ -1,58 +1,61 @@
-# E-Commerce Platform - Registration & Login System
+# Customer Registration & Login System - Lab 2
 
-This is a PHP-based e-commerce platform built using the MVC (Model-View-Controller) architecture pattern. This project implements user registration and login functionality as part of a comprehensive e-commerce system.
+A complete PHP customer authentication system with modern UI/UX, built with PHP, MySQL, Bootstrap, and jQuery. This project implements secure customer registration and login functionality with comprehensive form validation and session management.
 
-## Features
+## 🚀 Features
 
-### Registration System
-- User registration with validation
-- Password hashing for security
-- Role-based registration (Customer/Restaurant Owner)
-- Form validation with JavaScript
-- AJAX-based form submission
-- Beautiful, responsive UI with Bootstrap
-
-### Login System
-- Secure user authentication
-- Session management
-- Password verification
-- Form validation with regex
-- AJAX-based login
-- Automatic redirect after successful login
+### Authentication System
+- **Secure Customer Registration** with comprehensive form validation
+- **Customer Login** with password verification and session management
+- **Session Management** with comprehensive user data storage
+- **Logout Functionality** with complete session cleanup
+- **Auto-redirect** for already logged-in users
 
 ### Security Features
 - Password hashing using PHP's `password_hash()`
-- Session management
+- Password verification with `password_verify()`
 - SQL injection prevention with prepared statements
+- Input sanitization and validation
+- Weak password detection
 - XSS protection with `htmlspecialchars()`
-- CSRF protection through session validation
+
+### User Experience
+- **Responsive Design** with Bootstrap 5
+- **Real-time Form Validation** using JavaScript/jQuery with regex
+- **Loading States** with spinner animations
+- **SweetAlert2** notifications for enhanced user feedback
+- **CSS Animations** with Animate.css
+- **Mobile-responsive** interface
 
 ## Project Structure
 
 ```
 Register_Lap2_Aduot-Jok/
-├── actions/                    # Action files (handles form submissions)
-│   ├── login_customer_action.php
-│   └── register_user_action.php
-├── classes/                    # Model classes
-│   └── user_class.php
-├── controllers/                # Controller files
-│   └── user_controller.php
-├── db/                        # Database files
-│   └── dbforlab.sql
-├── js/                        # JavaScript files
-│   ├── login.js
-│   └── register.js
-├── login/                     # Login/Register pages
-│   ├── login.php
-│   ├── logout.php
-│   └── register.php
-├── settings/                  # Configuration files
-│   ├── core.php
-│   ├── db_class.php
-│   └── db_cred.php
-├── index.php                  # Landing page
-└── README.md
+├── actions/                      # Action files (handles form submissions)
+│   ├── login_customer_action.php   # Handles customer login requests with session management
+│   └── register_user_action.php    # Handles user registration requests
+├── classes/                      # Model classes
+│   ├── customer_class.php          # Customer model with login validation & CRUD operations
+│   └── user_class.php              # User model (legacy support)
+├── controllers/                  # Controller files (business logic)
+│   ├── customer_controller.php     # Customer business logic with login_customer_ctr method
+│   └── user_controller.php         # User business logic (legacy)
+├── db/                          # Database files
+│   └── dbforlab.sql                # Complete database schema with customer table
+├── js/                          # JavaScript files with validation & AJAX
+│   ├── login.js                    # Enhanced login form validation with regex & AJAX
+│   └── register.js                 # Registration form validation
+├── login/                       # Authentication pages
+│   ├── login.php                   # Customer login form with auto-redirect
+│   ├── logout.php                  # Logout handler with session cleanup
+│   └── register.php                # User registration form
+├── settings/                    # Configuration files
+│   ├── core.php                    # Core application settings
+│   ├── db_class.php                # Database connection class
+│   └── db_cred.php                 # Database credentials (not in repo)
+├── index.php                    # Landing page with logout menu
+├── test_customer_system.php     # System testing script
+└── composer.json                # Composer configuration
 ```
 
 ## Database Schema
