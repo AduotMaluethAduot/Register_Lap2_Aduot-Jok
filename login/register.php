@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+// Redirect if user is already logged in
+if (isset($_SESSION['user_id'])) {
+    header('Location: ../index.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,57 +17,49 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <style>
+        :root {
+            /* Restaurant Color Palette - Appetite Stimulating */
+            --primary-orange: #FF6B35;
+            --secondary-red: #D2001C;
+            --accent-yellow: #FFB700;
+            --background-cream: #FFF8F0;
+            --text-brown: #2D1B12;
+            --light-orange: #FFE5D9;
+            --dark-orange: #E55A2B;
+            --warm-brown: #8B4513;
+        }
+        
         .btn-custom {
-            background-color: #D19C97;
-            border-color: #D19C97;
+            background-color: var(--primary-orange);
+            border-color: var(--primary-orange);
             color: #fff;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
 
         .btn-custom:hover {
-            background-color: #b77a7a;
-            border-color: #b77a7a;
+            background-color: var(--dark-orange);
+            border-color: var(--dark-orange);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
         }
 
         .highlight {
-            color: #D19C97;
+            color: var(--primary-orange);
             transition: color 0.3s;
+            text-decoration: none;
         }
 
         .highlight:hover {
-            color: #b77a7a;
+            color: var(--dark-orange);
         }
 
         body {
-            /* Base background color */
-            background-color: #f8f9fa;
-
-            /* Gradient-like grid using repeating-linear-gradients */
-            background-image:
-                repeating-linear-gradient(0deg,
-                    #b77a7a,
-                    #b77a7a 1px,
-                    transparent 1px,
-                    transparent 20px),
-                repeating-linear-gradient(90deg,
-                    #b77a7a,
-                    #b77a7a 1px,
-                    transparent 1px,
-                    transparent 20px),
-                linear-gradient(rgba(183, 122, 122, 0.1),
-                    rgba(183, 122, 122, 0.1));
-
-            /* Blend the gradients for a subtle overlay effect */
-            background-blend-mode: overlay;
-
-            /* Define the size of the grid */
-            background-size: 20px 20px;
-
-            /* Ensure the background covers the entire viewport */
+            background: linear-gradient(135deg, var(--background-cream) 0%, var(--light-orange) 100%);
             min-height: 100vh;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Open Sans', sans-serif;
         }
 
         .register-container {
@@ -67,25 +68,67 @@
 
         .card {
             border: none;
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.15);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
         }
 
         .card-header {
-            background-color: #D19C97;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-red));
             color: #fff;
+            padding: 1.5rem;
+            border: none;
         }
 
-        .custom-radio .form-check-input:checked+.form-check-label::before {
-            background-color: #D19C97;
-            border-color: #D19C97;
+        .card-header h4 {
+            margin: 0;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+        
+        .form-label {
+            color: var(--text-brown);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-label i {
+            margin-left: 5px;
+            color: var(--primary-orange);
+        }
+
+        .card-footer {
+            background: var(--background-cream);
+            border: none;
+            padding: 1.5rem;
+            color: var(--text-brown);
+        }
+
+        .custom-radio .form-check-input:checked {
+            background-color: var(--primary-orange);
+            border-color: var(--primary-orange);
         }
 
         .form-check-label {
             position: relative;
             padding-left: 2rem;
             cursor: pointer;
+            color: var(--text-brown);
+            font-weight: 500;
         }
 
         .form-check-label::before {
@@ -96,14 +139,14 @@
             transform: translateY(-50%);
             width: 1rem;
             height: 1rem;
-            border: 2px solid #D19C97;
+            border: 2px solid var(--primary-orange);
             border-radius: 50%;
             background-color: #fff;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: all 0.3s ease;
         }
 
         .form-check-input:focus+.form-check-label::before {
-            box-shadow: 0 0 0 0.2rem rgba(209, 156, 151, 0.5);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
         }
 
         .animate-pulse-custom {
@@ -116,12 +159,24 @@
             }
 
             50% {
-                transform: scale(1.05);
+                transform: scale(1.02);
             }
 
             100% {
                 transform: scale(1);
             }
+        }
+        
+        /* Country loading styles */
+        #country:disabled {
+            background-color: #f8f9fa;
+            opacity: 0.7;
+        }
+        
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+            color: var(--primary-orange);
         }
     </style>
 </head>
@@ -151,6 +206,19 @@
                             <div class="mb-3">
                                 <label for="phone_number" class="form-label">Phone Number <i class="fa fa-phone"></i></label>
                                 <input type="text" class="form-control animate__animated animate__fadeInUp" id="phone_number" name="phone_number" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="country" class="form-label">Country <i class="fa fa-globe"></i></label>
+                                <select class="form-control animate__animated animate__fadeInUp" id="country" name="country" required>
+                                    <option value="">Loading countries...</option>
+                                </select>
+                                <div class="spinner-border spinner-border-sm mt-2" role="status" id="country-loader" style="display: none;">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="city" class="form-label">City <i class="fa fa-map-marker"></i></label>
+                                <input type="text" class="form-control animate__animated animate__fadeInUp" id="city" name="city" placeholder="Enter your city" required>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Register As</label>
