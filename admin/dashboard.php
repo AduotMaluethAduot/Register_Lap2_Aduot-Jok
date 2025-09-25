@@ -347,15 +347,22 @@ $admin_id = get_user_id();
         }
 
         function testSessionManagement() {
+            // Sanitize data before injecting into SweetAlert
+            const userId = <?php echo json_encode($admin_id); ?>;
+            const userRole = <?php echo json_encode(get_user_role()); ?>;
+            const isAdmin = <?php echo json_encode(is_user_admin()); ?>;
+            const isSessionValid = <?php echo json_encode(is_session_valid()); ?>;
+            const loginTime = <?php echo json_encode(isset($_SESSION['login_time']) ? date('Y-m-d H:i:s', $_SESSION['login_time']) : 'Unknown'); ?>;
+            
             Swal.fire({
                 title: 'Session Management Test',
                 html: `
                     <div class="text-start">
-                        <p><strong>User ID:</strong> <?php echo $admin_id; ?></p>
-                        <p><strong>Role:</strong> <?php echo get_user_role(); ?></p>
-                        <p><strong>Admin Status:</strong> <?php echo is_user_admin() ? 'Yes' : 'No'; ?></p>
-                        <p><strong>Session Valid:</strong> <?php echo is_session_valid() ? 'Yes' : 'No'; ?></p>
-                        <p><strong>Login Time:</strong> <?php echo isset($_SESSION['login_time']) ? date('Y-m-d H:i:s', $_SESSION['login_time']) : 'Unknown'; ?></p>
+                        <p><strong>User ID:</strong> ${userId}</p>
+                        <p><strong>Role:</strong> ${userRole}</p>
+                        <p><strong>Admin Status:</strong> ${isAdmin ? 'Yes' : 'No'}</p>
+                        <p><strong>Session Valid:</strong> ${isSessionValid ? 'Yes' : 'No'}</p>
+                        <p><strong>Login Time:</strong> ${loginTime}</p>
                     </div>
                 `,
                 icon: 'info',
@@ -367,14 +374,20 @@ $admin_id = get_user_id();
         }
 
         function checkPermissions() {
+            // Sanitize data before injecting into SweetAlert
+            const isLoggedIn = <?php echo json_encode(is_user_logged_in()); ?>;
+            const isAdmin = <?php echo json_encode(is_user_admin()); ?>;
+            const hasAdminRole = <?php echo json_encode(has_role('admin')); ?>;
+            const isSessionValid = <?php echo json_encode(is_session_valid(3600)); ?>;
+            
             Swal.fire({
                 title: 'Permission Check',
                 html: `
                     <div class="text-start">
-                        <p><i class="fas fa-check text-success"></i> <strong>is_user_logged_in():</strong> <?php echo is_user_logged_in() ? 'true' : 'false'; ?></p>
-                        <p><i class="fas fa-check text-success"></i> <strong>is_user_admin():</strong> <?php echo is_user_admin() ? 'true' : 'false'; ?></p>
-                        <p><i class="fas fa-check text-success"></i> <strong>has_role('admin'):</strong> <?php echo has_role('admin') ? 'true' : 'false'; ?></p>
-                        <p><i class="fas fa-check text-success"></i> <strong>Session Timeout:</strong> <?php echo is_session_valid(3600) ? 'Valid' : 'Expired'; ?></p>
+                        <p><i class="fas fa-check text-success"></i> <strong>is_user_logged_in():</strong> ${isLoggedIn ? 'true' : 'false'}</p>
+                        <p><i class="fas fa-check text-success"></i> <strong>is_user_admin():</strong> ${isAdmin ? 'true' : 'false'}</p>
+                        <p><i class="fas fa-check text-success"></i> <strong>has_role('admin'):</strong> ${hasAdminRole ? 'true' : 'false'}</p>
+                        <p><i class="fas fa-check text-success"></i> <strong>Session Timeout:</strong> ${isSessionValid ? 'Valid' : 'Expired'}</p>
                     </div>
                 `,
                 icon: 'success',

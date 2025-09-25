@@ -411,27 +411,31 @@ if (!is_session_valid()) {
     
     <script>
         function testAdminAccess() {
+            // Sanitize data before injecting into SweetAlert
+            const isAdmin = <?php echo json_encode(is_user_admin()); ?>;
+            const hasAdminRole = <?php echo json_encode(has_role('admin')); ?>;
+            
             Swal.fire({
                 title: 'Admin Access Test',
                 html: `
                     <div class="text-start">
                         <h5>Current Admin Status:</h5>
-                        <p><strong>is_user_admin():</strong> <?php echo is_user_admin() ? '<span class="text-success">TRUE</span>' : '<span class="text-danger">FALSE</span>'; ?></p>
-                        <p><strong>has_role('admin'):</strong> <?php echo has_role('admin') ? '<span class="text-success">TRUE</span>' : '<span class="text-danger">FALSE</span>'; ?></p>
-                        <p><strong>Admin Panel Access:</strong> <?php echo is_user_admin() ? '<span class="text-success">GRANTED</span>' : '<span class="text-danger">DENIED</span>'; ?></p>
+                        <p><strong>is_user_admin():</strong> ${isAdmin ? '<span class="text-success">TRUE</span>' : '<span class="text-danger">FALSE</span>'}</p>
+                        <p><strong>has_role('admin'):</strong> ${hasAdminRole ? '<span class="text-success">TRUE</span>' : '<span class="text-danger">FALSE</span>'}</p>
+                        <p><strong>Admin Panel Access:</strong> ${isAdmin ? '<span class="text-success">GRANTED</span>' : '<span class="text-danger">DENIED</span>'}</p>
                         
-                        <?php if (is_user_admin()): ?>
+                        ${isAdmin ? `
                         <div class="alert alert-success mt-3">
                             <i class="fas fa-check-circle"></i> You have full administrative privileges!
                         </div>
-                        <?php else: ?>
+                        ` : `
                         <div class="alert alert-warning mt-3">
                             <i class="fas fa-exclamation-triangle"></i> You do not have admin privileges.
                         </div>
-                        <?php endif; ?>
+                        `}
                     </div>
                 `,
-                icon: '<?php echo is_user_admin() ? 'success' : 'warning'; ?>',
+                icon: isAdmin ? 'success' : 'warning',
                 confirmButtonText: 'Close',
                 customClass: {
                     confirmButton: 'btn btn-admin'
@@ -440,13 +444,17 @@ if (!is_session_valid()) {
         }
 
         function testCustomerAccess() {
+            // Sanitize data before injecting into SweetAlert
+            const hasCustomerRole = <?php echo json_encode(has_role('customer')); ?>;
+            const userRole = <?php echo json_encode(get_user_role()); ?>;
+            
             Swal.fire({
                 title: 'Customer Access Test',
                 html: `
                     <div class="text-start">
                         <h5>Customer Role Status:</h5>
-                        <p><strong>has_role('customer'):</strong> <?php echo has_role('customer') ? '<span class="text-success">TRUE</span>' : '<span class="text-danger">FALSE</span>'; ?></p>
-                        <p><strong>Current Role:</strong> <?php echo get_user_role(); ?></p>
+                        <p><strong>has_role('customer'):</strong> ${hasCustomerRole ? '<span class="text-success">TRUE</span>' : '<span class="text-danger">FALSE</span>'}</p>
+                        <p><strong>Current Role:</strong> ${userRole}</p>
                         <p><strong>Customer Functions:</strong> Available</p>
                         
                         <div class="alert alert-info mt-3">
@@ -466,36 +474,48 @@ if (!is_session_valid()) {
             let result = '';
             let icon = 'info';
             
+            // Sanitize data before injecting into SweetAlert
+            const isLoggedIn = <?php echo json_encode(is_user_logged_in()); ?>;
+            const userId = <?php echo json_encode(get_user_id()); ?>;
+            const userName = <?php echo json_encode(get_user_name()); ?>;
+            const userEmail = <?php echo json_encode(get_user_email()); ?>;
+            const userRole = <?php echo json_encode(get_user_role()); ?>;
+            const isAdmin = <?php echo json_encode(is_user_admin()); ?>;
+            const hasAdminRole = <?php echo json_encode(has_role('admin')); ?>;
+            const hasAnyRole = <?php echo json_encode(has_any_role(['admin', 'customer'])); ?>;
+            const isSessionValid = <?php echo json_encode(is_session_valid()); ?>;
+            const loginTime = <?php echo json_encode(isset($_SESSION['login_time']) ? date('Y-m-d H:i:s', $_SESSION['login_time']) : 'Unknown'); ?>;
+            
             switch(functionName) {
                 case 'is_user_logged_in':
-                    result = `<strong>is_user_logged_in():</strong> <?php echo is_user_logged_in() ? 'TRUE' : 'FALSE'; ?>`;
-                    icon = '<?php echo is_user_logged_in() ? 'success' : 'error'; ?>';
+                    result = `<strong>is_user_logged_in():</strong> ${isLoggedIn ? 'TRUE' : 'FALSE'}`;
+                    icon = isLoggedIn ? 'success' : 'error';
                     break;
                 case 'get_user_id':
-                    result = `<strong>get_user_id():</strong> <?php echo get_user_id(); ?>`;
+                    result = `<strong>get_user_id():</strong> ${userId}`;
                     break;
                 case 'is_session_valid':
-                    result = `<strong>is_session_valid():</strong> <?php echo is_session_valid() ? 'TRUE' : 'FALSE'; ?>`;
-                    icon = '<?php echo is_session_valid() ? 'success' : 'error'; ?>';
+                    result = `<strong>is_session_valid():</strong> ${isSessionValid ? 'TRUE' : 'FALSE'}`;
+                    icon = isSessionValid ? 'success' : 'error';
                     break;
                 case 'is_user_admin':
-                    result = `<strong>is_user_admin():</strong> <?php echo is_user_admin() ? 'TRUE' : 'FALSE'; ?>`;
-                    icon = '<?php echo is_user_admin() ? 'success' : 'error'; ?>';
+                    result = `<strong>is_user_admin():</strong> ${isAdmin ? 'TRUE' : 'FALSE'}`;
+                    icon = isAdmin ? 'success' : 'error';
                     break;
                 case 'require_admin':
                     result = `<strong>require_admin():</strong> Function executed successfully (you're seeing this dialog!)`;
                     icon = 'success';
                     break;
                 case 'has_role_admin':
-                    result = `<strong>has_role('admin'):</strong> <?php echo has_role('admin') ? 'TRUE' : 'FALSE'; ?>`;
-                    icon = '<?php echo has_role('admin') ? 'success' : 'error'; ?>';
+                    result = `<strong>has_role('admin'):</strong> ${hasAdminRole ? 'TRUE' : 'FALSE'}`;
+                    icon = hasAdminRole ? 'success' : 'error';
                     break;
                 case 'get_user_role':
-                    result = `<strong>get_user_role():</strong> "<?php echo get_user_role(); ?>"`;
+                    result = `<strong>get_user_role():</strong> "${userRole}"`;
                     break;
                 case 'has_any_role':
-                    result = `<strong>has_any_role(['admin', 'customer']):</strong> <?php echo has_any_role(['admin', 'customer']) ? 'TRUE' : 'FALSE'; ?>`;
-                    icon = '<?php echo has_any_role(['admin', 'customer']) ? 'success' : 'error'; ?>';
+                    result = `<strong>has_any_role(['admin', 'customer']):</strong> ${hasAnyRole ? 'TRUE' : 'FALSE'}`;
+                    icon = hasAnyRole ? 'success' : 'error';
                     break;
                 case 'require_role':
                     result = `<strong>require_role('admin'):</strong> Function executed successfully (you have the required role!)`;
@@ -523,11 +543,11 @@ if (!is_session_valid()) {
                     result = `
                         <div class="text-start">
                             <h5>Session Information:</h5>
-                            <p><strong>User ID:</strong> <?php echo get_user_id(); ?></p>
-                            <p><strong>Name:</strong> <?php echo get_user_name(); ?></p>
-                            <p><strong>Email:</strong> <?php echo get_user_email(); ?></p>
-                            <p><strong>Role:</strong> <?php echo get_user_role(); ?></p>
-                            <p><strong>Login Time:</strong> <?php echo isset($_SESSION['login_time']) ? date('Y-m-d H:i:s', $_SESSION['login_time']) : 'Unknown'; ?></p>
+                            <p><strong>User ID:</strong> ${userId}</p>
+                            <p><strong>Name:</strong> ${userName}</p>
+                            <p><strong>Email:</strong> ${userEmail}</p>
+                            <p><strong>Role:</strong> ${userRole}</p>
+                            <p><strong>Login Time:</strong> ${loginTime}</p>
                         </div>
                     `;
                     break;

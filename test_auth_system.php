@@ -226,14 +226,10 @@ echo "<div class='row'>
         <div class='col-md-6'>
             <h5>Current Session Data:</h5>
             <div class='code-block'>
-                <strong>SESSION Variables:</strong><br>";
-                
-foreach ($_SESSION as $key => $value) {
-    $display_value = is_string($value) ? htmlspecialchars($value) : json_encode($value);
-    echo "$key: $display_value<br>";
-}
-
-echo "        </div>
+                <strong>Session Status:</strong> " . (session_status() === PHP_SESSION_ACTIVE ? 'Active' : 'Inactive') . "<br>
+                <strong>Session Variables Count:</strong> " . count($_SESSION) . "<br>
+                <strong>Note:</strong> Session data is protected and not displayed for security.
+            </div>
         </div>
       </div></div>";
 

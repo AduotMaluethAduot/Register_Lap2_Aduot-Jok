@@ -7,7 +7,9 @@ if (session_status() == PHP_SESSION_NONE) {
     // Configure session security settings
     ini_set('session.cookie_httponly', 1);
     ini_set('session.use_only_cookies', 1);
-    ini_set('session.cookie_secure', 0); // Set to 1 for HTTPS
+    // Set secure flag based on HTTPS detection
+    $secure_flag = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
+    ini_set('session.cookie_secure', $secure_flag ? 1 : 0);
     session_start();
 }
 ob_start();

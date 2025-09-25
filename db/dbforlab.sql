@@ -14,10 +14,9 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `shoppn`
--- Drop and recreate database for clean installation
+-- Create database for installation (without destructive DROP)
 --
-DROP DATABASE IF EXISTS `shoppn`;
-CREATE DATABASE `shoppn` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS `shoppn` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `shoppn`;
 
 -- --------------------------------------------------------
@@ -87,9 +86,11 @@ CREATE TABLE `customer` (
 --
 
 CREATE TABLE `orderdetails` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `qty` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   KEY `product_id` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -378,15 +378,19 @@ if (!is_session_valid()) {
         }
 
         function viewUser(userId) {
+            // Sanitize dynamic IDs to prevent XSS
+            const currentUserId = <?php echo json_encode(get_user_id()); ?>;
+            const sanitizedUserId = parseInt(userId) || 0;
+            
             Swal.fire({
                 title: 'View User Details',
                 html: `
                     <div class="text-start">
-                        <p><strong>User ID:</strong> ${userId}</p>
+                        <p><strong>User ID:</strong> ${sanitizedUserId}</p>
                         <p><strong>Status:</strong> Active</p>
                         <p><strong>Registration:</strong> 2024-01-15</p>
-                        <p><strong>Last Login:</strong> ${userId === <?php echo get_user_id(); ?> ? 'Now (Current Session)' : '2024-01-20 14:30'}</p>
-                        <p><strong>Role:</strong> ${userId === <?php echo get_user_id(); ?> ? 'Administrator' : 'Customer'}</p>
+                        <p><strong>Last Login:</strong> ${sanitizedUserId === parseInt(currentUserId) ? 'Now (Current Session)' : '2024-01-20 14:30'}</p>
+                        <p><strong>Role:</strong> ${sanitizedUserId === parseInt(currentUserId) ? 'Administrator' : 'Customer'}</p>
                     </div>
                 `,
                 icon: 'info',
@@ -398,7 +402,11 @@ if (!is_session_valid()) {
         }
 
         function editUser(userId) {
-            if (userId === <?php echo get_user_id(); ?>) {
+            // Sanitize dynamic IDs to prevent XSS
+            const currentUserId = <?php echo json_encode(get_user_id()); ?>;
+            const sanitizedUserId = parseInt(userId) || 0;
+            
+            if (sanitizedUserId === parseInt(currentUserId)) {
                 Swal.fire({
                     title: 'Edit Current User',
                     text: 'You cannot edit your own account from this interface for security reasons.',
