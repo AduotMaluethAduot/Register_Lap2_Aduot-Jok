@@ -1,8 +1,9 @@
 <?php
-session_start();
+// Use the enhanced session management from core.php
+require_once '../settings/core.php';
 
-// Redirect if user is already logged in
-if (isset($_SESSION['user_id'])) {
+// Redirect if user is already logged in using the new function
+if (is_user_logged_in()) {
     header('Location: ../index.php');
     exit();
 }
@@ -190,7 +191,7 @@ if (isset($_SESSION['user_id'])) {
                         <h4>Register</h4>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="" class="mt-4" id="register-form">
+                        <form method="POST" action="../actions/register_user_action.php" class="mt-4" id="register-form">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name <i class="fa fa-user"></i></label>
                                 <input type="text" class="form-control animate__animated animate__fadeInUp" id="name" name="name" required>

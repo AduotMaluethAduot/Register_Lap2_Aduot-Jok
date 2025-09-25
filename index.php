@@ -1,5 +1,6 @@
 <?php
-session_start();
+// Use the enhanced session management from core.php
+require_once 'settings/core.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -302,10 +303,20 @@ session_start();
 	<!-- Navigation Menu -->
 	<div class="menu-tray">
 		<i class="fas fa-utensils me-2" style="color: var(--primary-orange);"></i>
-		<?php if (isset($_SESSION['user_id'])): ?>
+		<?php if (is_user_logged_in()): ?>
 			<span class="welcome-message me-2">
-				<i class="fas fa-user-circle"></i> Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!
+				<i class="fas fa-user-circle"></i> Welcome, <?php echo htmlspecialchars(get_user_name()); ?>!
+				<?php if (is_user_admin()): ?>
+					<span style="color: var(--accent-yellow); font-weight: bold;">
+						<i class="fas fa-crown"></i> Admin
+					</span>
+				<?php endif; ?>
 			</span>
+			<?php if (is_user_admin()): ?>
+				<a href="admin/dashboard.php" class="btn btn-sm btn-warning" style="margin-right: 8px;">
+					<i class="fas fa-tachometer-alt"></i> Admin Panel
+				</a>
+			<?php endif; ?>
 			<a href="login/logout.php" class="btn btn-sm btn-danger-custom">
 				<i class="fas fa-sign-out-alt"></i> Logout
 			</a>
@@ -333,14 +344,22 @@ session_start();
 						Authentic Flavors, Unforgettable Experiences
 					</p>
 					
-					<?php if (isset($_SESSION['user_id'])): ?>
+					<?php if (is_user_logged_in()): ?>
 						<div class="hero-description">
 							<i class="fas fa-heart" style="color: var(--accent-yellow);"></i>
-							Welcome back, <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>! 
+							Welcome back, <strong><?php echo htmlspecialchars(get_user_name()); ?></strong>! 
+							<?php if (is_user_admin()): ?>
+								<span style="color: var(--accent-yellow);">You have administrative privileges.</span>
+							<?php endif; ?>
 							Ready to explore more delicious African cuisine?
 						</div>
 						<div class="mt-4">
-							<a href="#menu" class="cta-button pulse-animation">
+							<?php if (is_user_admin()): ?>
+								<a href="admin/dashboard.php" class="cta-button pulse-animation">
+									<i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard
+								</a>
+							<?php endif; ?>
+							<a href="#menu" class="cta-button <?php echo is_user_admin() ? 'cta-secondary' : 'pulse-animation'; ?>">
 								<i class="fas fa-utensils me-2"></i>Explore Menu
 							</a>
 							<a href="#order" class="cta-button cta-secondary">

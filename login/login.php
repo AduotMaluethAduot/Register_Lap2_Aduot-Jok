@@ -1,9 +1,13 @@
 <?php
-session_start();
+// Use the enhanced session management from core.php
+require_once '../settings/core.php';
 
-// Redirect if user is already logged in
-if (isset($_SESSION['user_id'])) {
-    header('Location: ../index.php');
+// Redirect if user is already logged in using the new function
+if (is_user_logged_in()) {
+    // Check if there's a redirect URL stored
+    $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '../index.php';
+    unset($_SESSION['redirect_after_login']);
+    header("Location: $redirect_url");
     exit();
 }
 ?>
@@ -147,12 +151,30 @@ if (isset($_SESSION['user_id'])) {
                         <h4>Login</h4>
                     </div>
                     <div class="card-body">
-                        <!-- Alert Messages (To be handled by backend) -->
-                        <!-- Example:
-                        <div class="alert alert-info text-center">Login successful!</div>
-                        -->
+                        <!-- Alert Messages -->
+                        <?php if (isset($_GET['message'])): ?>
+                            <?php if ($_GET['message'] === 'logged_out'): ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    You have been successfully logged out!
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            <?php elseif ($_GET['message'] === 'session_expired'): ?>
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-clock me-2"></i>
+                                    Your session has expired. Please login again.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            <?php elseif ($_GET['message'] === 'admin_required'): ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-shield-alt me-2"></i>
+                                    Admin privileges required to access that page.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            <?php endif; ?>
+                        <?php endif; ?>
 
-                        <form method="POST" action="" class="mt-4" id="login-form">
+                        <form method="POST" action="../actions/login_customer_action.php" class="mt-4" id="login-form">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email <i class="fa fa-envelope"></i></label>
                                 <input type="email" class="form-control animate__animated animate__fadeInUp" id="email" name="email" required>
