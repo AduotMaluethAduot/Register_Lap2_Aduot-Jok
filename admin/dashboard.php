@@ -223,6 +223,9 @@ $admin_id = get_user_id();
                     <a href="roles.php" class="menu-item">
                         <i class="fas fa-user-shield me-2"></i> User Roles & Permissions
                     </a>
+                    <a href="category.php" class="menu-item">
+                        <i class="fas fa-tags me-2"></i> Manage Categories
+                    </a>
                     <a href="products.php" class="menu-item">
                         <i class="fas fa-box me-2"></i> Manage Products
                     </a>

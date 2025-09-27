@@ -358,6 +358,9 @@ require_once 'settings/core.php';
 								<a href="admin/dashboard.php" class="cta-button pulse-animation">
 									<i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard
 								</a>
+								<a href="admin/category.php" class="cta-button pulse-animation">
+									<i class="fas fa-tags me-2"></i>Categories
+								</a>
 							<?php endif; ?>
 							<a href="#menu" class="cta-button <?php echo is_user_admin() ? 'cta-secondary' : 'pulse-animation'; ?>">
 								<i class="fas fa-utensils me-2"></i>Explore Menu
