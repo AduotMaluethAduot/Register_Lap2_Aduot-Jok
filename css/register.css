@@ -1,0 +1,156 @@
+:root {
+    /* Restaurant Color Palette - Appetite Stimulating */
+    --primary-orange: #FF6B35;
+    --secondary-red: #D2001C;
+    --accent-yellow: #FFB700;
+    --background-cream: #FFF8F0;
+    --text-brown: #2D1B12;
+    --light-orange: #FFE5D9;
+    --dark-orange: #E55A2B;
+}
+
+.btn-custom {
+    background-color: var(--primary-orange);
+    border-color: var(--primary-orange);
+    color: #fff;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+.btn-custom:hover {
+    background-color: var(--dark-orange);
+    border-color: var(--dark-orange);
+}
+
+.highlight {
+    color: var(--primary-orange);
+    transition: color 0.3s;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.highlight:hover {
+    color: var(--dark-orange);
+}
+
+body {
+    background: linear-gradient(135deg, var(--background-cream) 0%, var(--light-orange) 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 15px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9rem;
+}
+
+.register-container {
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.15);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--primary-orange), var(--secondary-red));
+    color: #fff;
+    padding: 0.8rem;
+    border: none;
+    text-align: center;
+}
+
+.card-header h4 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid rgba(255, 107, 53, 0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 0.1rem rgba(255, 107, 53, 0.25);
+}
+
+.form-label {
+    color: var(--text-brown);
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+}
+
+.form-label i {
+    margin-left: 3px;
+    color: var(--primary-orange);
+    font-size: 0.7rem;
+}
+
+.card-footer {
+    background: var(--background-cream);
+    border: none;
+    padding: 0.8rem;
+    color: var(--text-brown);
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.custom-radio .form-check-input:checked {
+    background-color: var(--primary-orange);
+    border-color: var(--primary-orange);
+}
+
+.form-check-label {
+    position: relative;
+    padding-left: 1.5rem;
+    cursor: pointer;
+    color: var(--text-brown);
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.form-check-label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 1px solid var(--primary-orange);
+    border-radius: 50%;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.form-check-input:focus+.form-check-label::before {
+    box-shadow: 0 0 0 0.1rem rgba(255, 107, 53, 0.25);
+}
+
+.form-text {
+    font-size: 0.7rem;
+}
+
+.alert {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.mb-3 {
+    margin-bottom: 0.75rem !important;
+}
+
+.mb-4 {
+    margin-bottom: 1rem !important;
+}

@@ -20,81 +20,7 @@ if (!is_session_valid()) {
     <title>Role Management - Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-orange: #FF6B35;
-            --secondary-red: #D2001C;
-            --accent-yellow: #FFB700;
-            --admin-blue: #2E86C1;
-            --admin-dark-blue: #2471A3;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #FFF8F0 0%, #FFE5D9 100%);
-            font-family: 'Open Sans', sans-serif;
-            color: #2D1B12;
-            min-height: 100vh;
-        }
-        
-        .admin-header {
-            background: linear-gradient(135deg, var(--admin-blue), var(--admin-dark-blue));
-            color: white;
-            padding: 1.5rem 0;
-            box-shadow: 0 4px 15px rgba(46, 134, 193, 0.3);
-        }
-        
-        .content-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid var(--admin-blue);
-        }
-        
-        .permission-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .permission-card {
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .permission-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .role-demo {
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            background: #f8f9fa;
-        }
-        
-        .role-admin { border-color: var(--secondary-red); background: rgba(210, 0, 28, 0.05); }
-        .role-customer { border-color: var(--primary-orange); background: rgba(255, 107, 53, 0.05); }
-        
-        .btn-admin {
-            background: var(--admin-blue);
-            border-color: var(--admin-blue);
-            color: white;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        
-        .btn-admin:hover {
-            background: var(--admin-dark-blue);
-            border-color: var(--admin-dark-blue);
-        }
-    </style>
+    <link href="../css/admin.css" rel="stylesheet">
 </head>
 <body>
     <!-- Admin Header -->
@@ -123,7 +49,18 @@ if (!is_session_valid()) {
         </div>
     </div>
 
-    <div class="container mt-4">
+    <div class="container mt-4" 
+         data-user-id="<?php echo htmlspecialchars(get_user_id()); ?>"
+         data-user-name="<?php echo htmlspecialchars(get_user_name()); ?>"
+         data-user-email="<?php echo htmlspecialchars(get_user_email()); ?>"
+         data-user-role="<?php echo htmlspecialchars(get_user_role()); ?>"
+         data-is-admin="<?php echo is_user_admin() ? 'true' : 'false'; ?>"
+         data-has-admin-role="<?php echo has_role('admin') ? 'true' : 'false'; ?>"
+         data-has-customer-role="<?php echo has_role('customer') ? 'true' : 'false'; ?>"
+         data-has-any-role="<?php echo has_any_role(['admin', 'customer']) ? 'true' : 'false'; ?>"
+         data-session-valid="<?php echo is_session_valid() ? 'true' : 'false'; ?>"
+         data-login-time="<?php echo isset($_SESSION['login_time']) ? date('Y-m-d H:i:s', $_SESSION['login_time']) : 'Unknown'; ?>"
+         data-is-logged-in="<?php echo is_user_logged_in() ? 'true' : 'false'; ?>">
         <!-- Current Role Testing -->
         <div class="content-card">
             <h4><i class="fas fa-vial me-2"></i>Current Session Role Testing</h4>
@@ -409,160 +346,6 @@ if (!is_session_valid()) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <script>
-        function testAdminAccess() {
-            // Sanitize data before injecting into SweetAlert
-            const isAdmin = <?php echo json_encode(is_user_admin()); ?>;
-            const hasAdminRole = <?php echo json_encode(has_role('admin')); ?>;
-            
-            Swal.fire({
-                title: 'Admin Access Test',
-                html: `
-                    <div class="text-start">
-                        <h5>Current Admin Status:</h5>
-                        <p><strong>is_user_admin():</strong> ${isAdmin ? '<span class="text-success">TRUE</span>' : '<span class="text-danger">FALSE</span>'}</p>
-                        <p><strong>has_role('admin'):</strong> ${hasAdminRole ? '<span class="text-success">TRUE</span>' : '<span class="text-danger">FALSE</span>'}</p>
-                        <p><strong>Admin Panel Access:</strong> ${isAdmin ? '<span class="text-success">GRANTED</span>' : '<span class="text-danger">DENIED</span>'}</p>
-                        
-                        ${isAdmin ? `
-                        <div class="alert alert-success mt-3">
-                            <i class="fas fa-check-circle"></i> You have full administrative privileges!
-                        </div>
-                        ` : `
-                        <div class="alert alert-warning mt-3">
-                            <i class="fas fa-exclamation-triangle"></i> You do not have admin privileges.
-                        </div>
-                        `}
-                    </div>
-                `,
-                icon: isAdmin ? 'success' : 'warning',
-                confirmButtonText: 'Close',
-                customClass: {
-                    confirmButton: 'btn btn-admin'
-                }
-            });
-        }
-
-        function testCustomerAccess() {
-            // Sanitize data before injecting into SweetAlert
-            const hasCustomerRole = <?php echo json_encode(has_role('customer')); ?>;
-            const userRole = <?php echo json_encode(get_user_role()); ?>;
-            
-            Swal.fire({
-                title: 'Customer Access Test',
-                html: `
-                    <div class="text-start">
-                        <h5>Customer Role Status:</h5>
-                        <p><strong>has_role('customer'):</strong> ${hasCustomerRole ? '<span class="text-success">TRUE</span>' : '<span class="text-danger">FALSE</span>'}</p>
-                        <p><strong>Current Role:</strong> ${userRole}</p>
-                        <p><strong>Customer Functions:</strong> Available</p>
-                        
-                        <div class="alert alert-info mt-3">
-                            <i class="fas fa-info-circle"></i> Customer role provides basic user functionality.
-                        </div>
-                    </div>
-                `,
-                icon: 'info',
-                confirmButtonText: 'Close',
-                customClass: {
-                    confirmButton: 'btn btn-admin'
-                }
-            });
-        }
-
-        function testFunction(functionName) {
-            let result = '';
-            let icon = 'info';
-            
-            // Sanitize data before injecting into SweetAlert
-            const isLoggedIn = <?php echo json_encode(is_user_logged_in()); ?>;
-            const userId = <?php echo json_encode(get_user_id()); ?>;
-            const userName = <?php echo json_encode(get_user_name()); ?>;
-            const userEmail = <?php echo json_encode(get_user_email()); ?>;
-            const userRole = <?php echo json_encode(get_user_role()); ?>;
-            const isAdmin = <?php echo json_encode(is_user_admin()); ?>;
-            const hasAdminRole = <?php echo json_encode(has_role('admin')); ?>;
-            const hasAnyRole = <?php echo json_encode(has_any_role(['admin', 'customer'])); ?>;
-            const isSessionValid = <?php echo json_encode(is_session_valid()); ?>;
-            const loginTime = <?php echo json_encode(isset($_SESSION['login_time']) ? date('Y-m-d H:i:s', $_SESSION['login_time']) : 'Unknown'); ?>;
-            
-            switch(functionName) {
-                case 'is_user_logged_in':
-                    result = `<strong>is_user_logged_in():</strong> ${isLoggedIn ? 'TRUE' : 'FALSE'}`;
-                    icon = isLoggedIn ? 'success' : 'error';
-                    break;
-                case 'get_user_id':
-                    result = `<strong>get_user_id():</strong> ${userId}`;
-                    break;
-                case 'is_session_valid':
-                    result = `<strong>is_session_valid():</strong> ${isSessionValid ? 'TRUE' : 'FALSE'}`;
-                    icon = isSessionValid ? 'success' : 'error';
-                    break;
-                case 'is_user_admin':
-                    result = `<strong>is_user_admin():</strong> ${isAdmin ? 'TRUE' : 'FALSE'}`;
-                    icon = isAdmin ? 'success' : 'error';
-                    break;
-                case 'require_admin':
-                    result = `<strong>require_admin():</strong> Function executed successfully (you're seeing this dialog!)`;
-                    icon = 'success';
-                    break;
-                case 'has_role_admin':
-                    result = `<strong>has_role('admin'):</strong> ${hasAdminRole ? 'TRUE' : 'FALSE'}`;
-                    icon = hasAdminRole ? 'success' : 'error';
-                    break;
-                case 'get_user_role':
-                    result = `<strong>get_user_role():</strong> "${userRole}"`;
-                    break;
-                case 'has_any_role':
-                    result = `<strong>has_any_role(['admin', 'customer']):</strong> ${hasAnyRole ? 'TRUE' : 'FALSE'}`;
-                    icon = hasAnyRole ? 'success' : 'error';
-                    break;
-                case 'require_role':
-                    result = `<strong>require_role('admin'):</strong> Function executed successfully (you have the required role!)`;
-                    icon = 'success';
-                    break;
-                case 'regenerate_session':
-                    result = `<strong>regenerate_session():</strong> Session ID regenerated for security`;
-                    icon = 'success';
-                    break;
-                case 'logout_warning':
-                    Swal.fire({
-                        title: 'Logout Warning',
-                        text: 'This function will immediately log you out and destroy your session!',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'I Understand',
-                        cancelButtonText: 'Cancel',
-                        customClass: {
-                            confirmButton: 'btn btn-warning',
-                            cancelButton: 'btn btn-secondary'
-                        }
-                    });
-                    return;
-                case 'session_info':
-                    result = `
-                        <div class="text-start">
-                            <h5>Session Information:</h5>
-                            <p><strong>User ID:</strong> ${userId}</p>
-                            <p><strong>Name:</strong> ${userName}</p>
-                            <p><strong>Email:</strong> ${userEmail}</p>
-                            <p><strong>Role:</strong> ${userRole}</p>
-                            <p><strong>Login Time:</strong> ${loginTime}</p>
-                        </div>
-                    `;
-                    break;
-            }
-            
-            Swal.fire({
-                title: 'Function Test Result',
-                html: result,
-                icon: icon,
-                confirmButtonText: 'Close',
-                customClass: {
-                    confirmButton: 'btn btn-admin'
-                }
-            });
-        }
-    </script>
+    <script src="../js/roles.js"></script>
 </body>
 </html>

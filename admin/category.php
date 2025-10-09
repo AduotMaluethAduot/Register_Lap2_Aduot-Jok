@@ -25,96 +25,7 @@ $admin_id = get_user_id();
     <title>Category Management - Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-orange: #FF6B35;
-            --secondary-red: #D2001C;
-            --accent-yellow: #FFB700;
-            --background-cream: #FFF8F0;
-            --text-brown: #2D1B12;
-            --light-orange: #FFE5D9;
-            --dark-orange: #E55A2B;
-            --admin-blue: #2E86C1;
-            --admin-dark-blue: #2471A3;
-        }
-        
-        body {
-            background: linear-gradient(135deg, var(--background-cream) 0%, var(--light-orange) 100%);
-            font-family: 'Open Sans', sans-serif;
-            color: var(--text-brown);
-            min-height: 100vh;
-        }
-        
-        .admin-header {
-            background: linear-gradient(135deg, var(--admin-blue), var(--admin-dark-blue));
-            color: white;
-            padding: 1.5rem 0;
-            box-shadow: 0 4px 15px rgba(46, 134, 193, 0.3);
-        }
-        
-        .admin-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid var(--admin-blue);
-            transition: transform 0.3s ease;
-        }
-        
-        .admin-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .btn-admin {
-            background: var(--admin-blue);
-            border-color: var(--admin-blue);
-            color: white;
-            padding: 0.7rem 1.5rem;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-admin:hover {
-            background: var(--admin-dark-blue);
-            border-color: var(--admin-dark-blue);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(46, 134, 193, 0.4);
-        }
-        
-        .btn-danger-custom {
-            background: #dc3545;
-            border-color: #dc3545;
-            color: white;
-        }
-        
-        .btn-danger-custom:hover {
-            background: #c82333;
-            border-color: #bd2130;
-        }
-        
-        .btn-warning-custom {
-            background: var(--accent-yellow);
-            border-color: var(--accent-yellow);
-            color: var(--text-brown);
-        }
-        
-        .btn-warning-custom:hover {
-            background: #e5a600;
-            border-color: #d39e00;
-        }
-        
-        .table th {
-            background-color: var(--admin-blue);
-            color: white;
-        }
-        
-        .form-control:focus {
-            border-color: var(--admin-blue);
-            box-shadow: 0 0 0 0.2rem rgba(46, 134, 193, 0.25);
-        }
-    </style>
+    <link href="../css/admin.css" rel="stylesheet">
 </head>
 <body>
     <!-- Admin Header -->
@@ -229,23 +140,5 @@ $admin_id = get_user_id();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../js/category.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Load categories when page loads
-            loadCategories();
-            
-            // Handle add category form submission
-            $('#addCategoryForm').on('submit', function(e) {
-                e.preventDefault();
-                addCategory();
-            });
-            
-            // Handle update category form submission
-            $('#updateCategoryForm').on('submit', function(e) {
-                e.preventDefault();
-                updateCategory();
-            });
-        });
-    </script>
 </body>
 </html>

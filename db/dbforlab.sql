@@ -16,8 +16,8 @@ SET time_zone = "+00:00";
 -- Database: `shoppn`
 -- Create database for installation (without destructive DROP)
 --
-CREATE DATABASE IF NOT EXISTS `shoppn` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `shoppn`;
+CREATE DATABASE IF NOT EXISTS `ecommerce_2025A_aduot_jok` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `ecommerce_2025A_aduot_jok`;
 
 -- --------------------------------------------------------
 --
