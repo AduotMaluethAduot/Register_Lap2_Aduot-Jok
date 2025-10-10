@@ -1,6 +1,6 @@
 <?php
 // Admin Dashboard - requires admin privileges
-require_once '../src/settings/core.php';
+require_once '../settings/core.php';
 
 // Require admin access
 require_admin();

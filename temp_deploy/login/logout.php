@@ -1,6 +1,6 @@
 <?php
 // Use the enhanced session management from core.php
-require_once '../src/settings/core.php';
+require_once '../settings/core.php';
 
 // Use the secure logout function from core.php
 logout_user();

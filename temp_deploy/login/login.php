@@ -1,6 +1,6 @@
 <?php
 // Use the enhanced session management from core.php
-require_once '../src/settings/core.php';
+require_once '../settings/core.php';
 
 // Redirect if user is already logged in using the new function
 if (is_user_logged_in()) {

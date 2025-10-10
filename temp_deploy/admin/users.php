@@ -1,7 +1,7 @@
 <?php
 // Admin Users Management - requires admin privileges
-require_once '../src/settings/core.php';
-require_once '../src/controllers/customer_controller.php';
+require_once '../settings/core.php';
+require_once '../controllers/customer_controller.php';
 
 // Require admin access
 require_admin();
