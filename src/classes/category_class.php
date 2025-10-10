@@ -1,6 +1,6 @@
 <?php
 
-require_once '../db/database.php';
+require_once '../../db/database.php';
 
 /**
  * Category class for handling category operations

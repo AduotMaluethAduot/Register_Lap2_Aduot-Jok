@@ -1,6 +1,6 @@
 <?php
 
-require_once '../db/database.php';
+require_once '../../db/database.php';
 
 /**
  * User class for handling user operations

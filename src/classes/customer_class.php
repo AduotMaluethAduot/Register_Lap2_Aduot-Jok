@@ -1,6 +1,6 @@
 <?php
 
-require_once '../db/database.php';
+require_once '../../db/database.php';
 
 /**
  * Customer class for handling customer operations

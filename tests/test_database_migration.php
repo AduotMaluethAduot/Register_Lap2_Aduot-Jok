@@ -5,7 +5,7 @@
  */
 
 // Include the new database system
-require_once 'db/database.php';
+require_once '../db/database.php';
 
 echo "<h1>Database Migration Test</h1>";
 
@@ -55,7 +55,7 @@ echo "<h2>3. Testing Updated Classes</h2>";
 // Test User Class
 echo "<h3>User Class Test</h3>";
 try {
-    require_once 'classes/user_class.php';
+    require_once '../src/classes/user_class.php';
     $user = new User();
     $users = User::getAllUsers();
     if ($users) {
@@ -70,7 +70,7 @@ try {
 // Test Customer Class
 echo "<h3>Customer Class Test</h3>";
 try {
-    require_once 'classes/customer_class.php';
+    require_once '../src/classes/customer_class.php';
     $customer = new Customer();
     $customers = $customer->getCustomerByEmail('admin@tasteofafrica.com');
     if ($customers) {
@@ -85,7 +85,7 @@ try {
 // Test Category Class
 echo "<h3>Category Class Test</h3>";
 try {
-    require_once 'classes/category_class.php';
+    require_once '../src/classes/category_class.php';
     $category = new Category();
     $categories = $category->getAllCategories();
     if ($categories) {
@@ -103,7 +103,7 @@ echo "<h2>4. Testing Controllers</h2>";
 // Test Category Controller
 echo "<h3>Category Controller Test</h3>";
 try {
-    require_once 'controllers/category_controller.php';
+    require_once '../src/controllers/category_controller.php';
     $categories = get_all_categories_ctr();
     if ($categories) {
         echo "<p style='color: green;'>✅ Category controller works - Found " . count($categories) . " categories</p>";
