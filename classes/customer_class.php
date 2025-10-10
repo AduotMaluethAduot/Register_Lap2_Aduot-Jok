@@ -1,11 +1,12 @@
 <?php
 
-require_once 'settings/db_class.php';
+require_once '../db/database.php';
 
 /**
  * Customer class for handling customer operations
+ * Updated to use PDO database system
  */
-class Customer extends db_connection
+class Customer
 {
     private $customer_id;
     private $customer_name;
@@ -19,7 +20,6 @@ class Customer extends db_connection
 
     public function __construct($customer_id = null)
     {
-        parent::db_connect();
         if ($customer_id) {
             $this->customer_id = $customer_id;
             $this->loadCustomer();
@@ -38,8 +38,7 @@ class Customer extends db_connection
             return false;
         }
         
-        $sql = "SELECT * FROM customer WHERE customer_id = $this->customer_id";
-        $result = $this->db_fetch_one($sql);
+        $result = fetchOne("SELECT * FROM customer WHERE customer_id = ?", [$this->customer_id]);
         
         if ($result) {
             $this->customer_name = $result['customer_name'];
@@ -63,11 +62,7 @@ class Customer extends db_connection
      */
     public function getCustomerByEmail($email, $password = null)
     {
-        // Sanitize email input
-        $email = mysqli_real_escape_string($this->db, $email);
-        
-        $sql = "SELECT * FROM customer WHERE customer_email = '$email'";
-        $result = $this->db_fetch_one($sql);
+        $result = fetchOne("SELECT * FROM customer WHERE customer_email = ?", [$email]);
         
         if ($result && $password !== null) {
             // Verify password if provided
@@ -94,19 +89,24 @@ class Customer extends db_connection
         // Hash the password
         $hashed_password = password_hash($customer_data['password'], PASSWORD_DEFAULT);
         
-        // Sanitize inputs
-        $name = mysqli_real_escape_string($this->db, $customer_data['name']);
-        $email = mysqli_real_escape_string($this->db, $customer_data['email']);
-        $country = mysqli_real_escape_string($this->db, $customer_data['country']);
-        $city = mysqli_real_escape_string($this->db, $customer_data['city']);
-        $contact = mysqli_real_escape_string($this->db, $customer_data['contact']);
-        $role = isset($customer_data['role']) ? (int)$customer_data['role'] : 2; // Default role 2 for customer
+        $name = $customer_data['name'];
+        $email = $customer_data['email'];
+        $country = $customer_data['country'];
+        $city = $customer_data['city'];
+        $contact = $customer_data['contact'];
+        $role = isset($customer_data['role']) ? $customer_data['role'] : 'customer';
         
-        $sql = "INSERT INTO customer (customer_name, customer_email, customer_pass, customer_country, customer_city, customer_contact, user_role) 
-                VALUES ('$name', '$email', '$hashed_password', '$country', '$city', '$contact', $role)";
-        
-        if ($this->db_write_query($sql)) {
-            return $this->last_insert_id();
+        try {
+            $result = executeQuery(
+                "INSERT INTO customer (customer_name, customer_email, customer_pass, customer_country, customer_city, customer_contact, user_role) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [$name, $email, $hashed_password, $country, $city, $contact, $role]
+            );
+            
+            if ($result) {
+                return getDB()->lastInsertId();
+            }
+        } catch (Exception $e) {
+            error_log("Customer creation failed: " . $e->getMessage());
         }
         return false;
     }
@@ -122,44 +122,56 @@ class Customer extends db_connection
             return false;
         }
         
-        $updates = array();
+        $allowed_fields = ['customer_name', 'customer_email', 'customer_pass', 'customer_country', 'customer_city', 'customer_contact'];
+        $update_fields = [];
+        $values = [];
         
-        if (isset($customer_data['name'])) {
-            $name = mysqli_real_escape_string($this->db, $customer_data['name']);
-            $updates[] = "customer_name = '$name'";
+        foreach ($customer_data as $field => $value) {
+            if (in_array($field, $allowed_fields)) {
+                if ($field === 'customer_pass') {
+                    $value = password_hash($value, PASSWORD_DEFAULT);
+                }
+                $update_fields[] = "$field = ?";
+                $values[] = $value;
+            }
         }
         
-        if (isset($customer_data['email'])) {
-            $email = mysqli_real_escape_string($this->db, $customer_data['email']);
-            $updates[] = "customer_email = '$email'";
-        }
-        
-        if (isset($customer_data['password'])) {
-            $hashed_password = password_hash($customer_data['password'], PASSWORD_DEFAULT);
-            $updates[] = "customer_pass = '$hashed_password'";
-        }
-        
-        if (isset($customer_data['country'])) {
-            $country = mysqli_real_escape_string($this->db, $customer_data['country']);
-            $updates[] = "customer_country = '$country'";
-        }
-        
-        if (isset($customer_data['city'])) {
-            $city = mysqli_real_escape_string($this->db, $customer_data['city']);
-            $updates[] = "customer_city = '$city'";
-        }
-        
-        if (isset($customer_data['contact'])) {
-            $contact = mysqli_real_escape_string($this->db, $customer_data['contact']);
-            $updates[] = "customer_contact = '$contact'";
-        }
-        
-        if (empty($updates)) {
+        if (empty($update_fields)) {
             return false;
         }
         
-        $sql = "UPDATE customer SET " . implode(', ', $updates) . " WHERE customer_id = $this->customer_id";
-        return $this->db_write_query($sql);
+        $values[] = $this->customer_id;
+        $sql = "UPDATE customer SET " . implode(', ', $update_fields) . " WHERE customer_id = ?";
+        
+        try {
+            $result = executeQuery($sql, $values);
+            if ($result) {
+                // Update local properties
+                foreach ($customer_data as $field => $value) {
+                    switch ($field) {
+                        case 'customer_name':
+                            $this->customer_name = $value;
+                            break;
+                        case 'customer_email':
+                            $this->customer_email = $value;
+                            break;
+                        case 'customer_country':
+                            $this->customer_country = $value;
+                            break;
+                        case 'customer_city':
+                            $this->customer_city = $value;
+                            break;
+                        case 'customer_contact':
+                            $this->customer_contact = $value;
+                            break;
+                    }
+                }
+                return true;
+            }
+        } catch (Exception $e) {
+            error_log("Customer update failed: " . $e->getMessage());
+        }
+        return false;
     }
 
     /**

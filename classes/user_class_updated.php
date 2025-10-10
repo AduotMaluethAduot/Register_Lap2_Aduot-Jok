@@ -1,11 +1,11 @@
 <?php
+/**
+ * Updated User Class using the new PDO database system
+ * This is an example of how to modernize your existing classes
+ */
 
 require_once '../db/database.php';
 
-/**
- * User class for handling user operations
- * Updated to use PDO database system
- */
 class User
 {
     private $user_id;
@@ -77,14 +77,30 @@ class User
 
     public function getUserByEmail($email)
     {
-        return fetchOne("SELECT * FROM customer WHERE customer_email = ?", [$email]);
+        $user = fetchOne("SELECT * FROM customer WHERE customer_email = ?", [$email]);
+        if ($user) {
+            $this->user_id = $user['customer_id'];
+            $this->name = $user['customer_name'];
+            $this->email = $user['customer_email'];
+            $this->role = $user['user_role'];
+            $this->date_created = $user['created_at'] ?? null;
+            $this->phone_number = $user['customer_contact'];
+            $this->country = $user['customer_country'];
+            $this->city = $user['customer_city'];
+            return true;
+        }
+        return false;
     }
 
-    public function loginUser($email, $password)
+    public function verifyPassword($password)
     {
-        $user = $this->getUserByEmail($email);
-        if ($user && password_verify($password, $user['customer_pass'])) {
-            return $user;
+        if (!$this->user_id) {
+            return false;
+        }
+        
+        $user = fetchOne("SELECT customer_pass FROM customer WHERE customer_id = ?", [$this->user_id]);
+        if ($user) {
+            return password_verify($password, $user['customer_pass']);
         }
         return false;
     }
@@ -179,3 +195,4 @@ class User
         }
     }
 }
+?>

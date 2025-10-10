@@ -1,18 +1,18 @@
 <?php
 
-require_once '../settings/db_class.php';
+require_once '../db/database.php';
 
 /**
  * Category class for handling category operations
+ * Updated to use PDO database system
  */
-class Category extends db_connection
+class Category
 {
     private $cat_id;
     private $cat_name;
 
     public function __construct($cat_id = null)
     {
-        parent::db_connect();
         if ($cat_id) {
             $this->cat_id = $cat_id;
             $this->loadCategory();
@@ -31,8 +31,7 @@ class Category extends db_connection
             return false;
         }
         
-        $sql = "SELECT * FROM categories WHERE cat_id = $this->cat_id";
-        $result = $this->db_fetch_one($sql);
+        $result = fetchOne("SELECT * FROM categories WHERE cat_id = ?", [$this->cat_id]);
         
         if ($result) {
             $this->cat_id = $result['cat_id'];
@@ -48,8 +47,7 @@ class Category extends db_connection
      */
     public function getAllCategories()
     {
-        $sql = "SELECT * FROM categories ORDER BY cat_name";
-        return $this->db_fetch_all($sql);
+        return fetchAll("SELECT * FROM categories ORDER BY cat_name");
     }
 
     /**
@@ -59,9 +57,7 @@ class Category extends db_connection
      */
     public function getCategoryById($cat_id)
     {
-        $cat_id = mysqli_real_escape_string($this->db, $cat_id);
-        $sql = "SELECT * FROM categories WHERE cat_id = $cat_id";
-        return $this->db_fetch_one($sql);
+        return fetchOne("SELECT * FROM categories WHERE cat_id = ?", [$cat_id]);
     }
 
     /**
@@ -71,9 +67,7 @@ class Category extends db_connection
      */
     public function getCategoryByName($cat_name)
     {
-        $cat_name = mysqli_real_escape_string($this->db, $cat_name);
-        $sql = "SELECT * FROM categories WHERE cat_name = '$cat_name'";
-        return $this->db_fetch_one($sql);
+        return fetchOne("SELECT * FROM categories WHERE cat_name = ?", [$cat_name]);
     }
 
     /**
@@ -88,13 +82,14 @@ class Category extends db_connection
             return false; // Category already exists
         }
         
-        // Sanitize input
-        $cat_name = mysqli_real_escape_string($this->db, $cat_name);
-        
-        $sql = "INSERT INTO categories (cat_name) VALUES ('$cat_name')";
-        
-        if ($this->db_write_query($sql)) {
-            return $this->last_insert_id();
+        try {
+            $result = executeQuery("INSERT INTO categories (cat_name) VALUES (?)", [$cat_name]);
+            
+            if ($result) {
+                return getDB()->lastInsertId();
+            }
+        } catch (Exception $e) {
+            error_log("Category creation failed: " . $e->getMessage());
         }
         return false;
     }
@@ -113,12 +108,13 @@ class Category extends db_connection
             return false; // Another category with this name already exists
         }
         
-        // Sanitize inputs
-        $cat_id = mysqli_real_escape_string($this->db, $cat_id);
-        $cat_name = mysqli_real_escape_string($this->db, $cat_name);
-        
-        $sql = "UPDATE categories SET cat_name = '$cat_name' WHERE cat_id = $cat_id";
-        return $this->db_write_query($sql);
+        try {
+            $result = executeQuery("UPDATE categories SET cat_name = ? WHERE cat_id = ?", [$cat_name, $cat_id]);
+            return $result->rowCount() > 0;
+        } catch (Exception $e) {
+            error_log("Category update failed: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -128,9 +124,13 @@ class Category extends db_connection
      */
     public function deleteCategory($cat_id)
     {
-        $cat_id = mysqli_real_escape_string($this->db, $cat_id);
-        $sql = "DELETE FROM categories WHERE cat_id = $cat_id";
-        return $this->db_write_query($sql);
+        try {
+            $result = executeQuery("DELETE FROM categories WHERE cat_id = ?", [$cat_id]);
+            return $result->rowCount() > 0;
+        } catch (Exception $e) {
+            error_log("Category deletion failed: " . $e->getMessage());
+            return false;
+        }
     }
 
     // Getter methods
